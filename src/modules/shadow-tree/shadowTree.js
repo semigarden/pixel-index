@@ -359,7 +359,8 @@ const renderToBuffer = async (node, buffer, offsetX = 0, offsetY = 0, depth = 0,
             }
             if (cy < 0 || cy >= buffer.length || cx < 0 || cx >= buffer[0].length) continue;
             const cell = buffer[cy][cx];
-            if (bgOpacity < 1 && overlayRgb && cell.raw) {
+            if (!cell.raw) continue;
+            if (bgOpacity < 1 && overlayRgb) {
               const parsed = parseRawToRgb(cell.raw);
               if (parsed && (parsed.fgRgb || parsed.bgRgb)) {
                 const blendFg = parsed.fgRgb ? blendRgb(overlayRgb, parsed.fgRgb, bgOpacity) : overlayRgb;
@@ -379,7 +380,7 @@ const renderToBuffer = async (node, buffer, offsetX = 0, offsetY = 0, depth = 0,
         }
       }
 
-      // paint half blocks
+      // paint half blocks (text visible across full bar)
       for (let r = 0; r < Math.min(height, cellRows); r++) {
         const rowOffset = r * cellCols;
         for (let c = 0; c < Math.min(width, cellCols); c++) {

@@ -28,7 +28,7 @@ const Panel = () => {
         pixelFont: true,
         display: 'grid',
         gap: 16,
-        backgroundColor: 'black',
+        backgroundColor: 'transparent',
         overflow: 'auto',
         scrollbarWidth: 1,
         scrollY: state.scrollY || 0,
@@ -44,7 +44,7 @@ const Panel = () => {
             return element('div', { 
               display: 'flex', 
               flexDirection: 'column', 
-              backgroundColor: 'black', 
+              backgroundColor: 'transparent', 
               overflow: 'hidden', 
             }, [
               element(
@@ -79,7 +79,7 @@ const Panel = () => {
                   fontSize: 1,
                   pixelFont: true,
                   fontFamily: 'compact',
-                  backgroundColor: 'black',
+                  backgroundColor: 'transparent',
                   color: isSelected ? 'white' : 'coolGray',
                 },
                 truncateFilenameKeepExtension(item.name, 64, 1, 'compact')
@@ -91,7 +91,7 @@ const Panel = () => {
             return element('div', {
                 display: 'flex',
                 flexDirection: 'column',
-                backgroundColor: 'black',
+                backgroundColor: 'transparent',
                 overflow: 'hidden',
                 zIndex: 0,
               }, [
@@ -104,7 +104,7 @@ const Panel = () => {
                     verticalAlign: 'top',
                     fontSize: 2,
                     pixelFont: true,
-                    backgroundColor: 'black',
+                    backgroundColor: 'transparent',
                     overflow: 'hidden',
                     staticMode: true,
                     isPreview: true,
@@ -122,7 +122,7 @@ const Panel = () => {
                     fontSize: 1,
                     pixelFont: true,
                     fontFamily: 'compact',
-                    backgroundColor: 'black',
+                    backgroundColor: 'transparent',
                     color: isSelected ? 'white' : 'coolGray',
                   },
                   truncateFilenameKeepExtension(item.name, 62, 1, 'compact')
@@ -137,7 +137,7 @@ const Panel = () => {
         y: state.terminal.height - 3,
         width: state.terminal.width,
         height: 4,
-        backgroundColor: 'black',
+        backgroundColor: 'transparent',
         zIndex: 10,
         position: 'fixed',
       }, [
@@ -150,7 +150,7 @@ const Panel = () => {
           fontSize: 1,
           pixelFont: true,
           fontFamily: 'compact',
-          backgroundColor: 'black',
+          backgroundColor: 'transparent',
           color: 'white',
           zIndex: 2,
         },
@@ -165,7 +165,7 @@ const Panel = () => {
         fontSize: 1,
         pixelFont: true,
         fontFamily: 'compact',
-        backgroundColor: 'black',
+        backgroundColor: 'transparent',
         color: 'white',
         zIndex: 4,
       }, `Selected: ${itemCount > 0 ? state.selectedIndex + 1 : 0}/${itemCount}`),

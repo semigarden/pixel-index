@@ -13,6 +13,45 @@ const getBgAnsi = (bgName) => {
   return colors['bg' + bgName] || '';
 };
 
+const colorNameToRgb = {
+  black: [0, 0, 0],
+  white: [255, 255, 255],
+  gray: [128, 128, 128],
+  coolGray: [139, 148, 163],
+  silver: [220, 220, 220],
+  red: [255, 0, 0],
+  blue: [0, 0, 255],
+  cyan: [0, 255, 255],
+  pink: [255, 192, 203],
+  neonGreen: [122, 254, 178],
+};
+
+const getRgbForBlend = (colorName) => {
+  if (!colorName || colorName === 'transparent') return null;
+  return colorNameToRgb[colorName] || colorNameToRgb.black;
+};
+
+const parseRawToRgb = (raw) => {
+  if (!raw || typeof raw !== 'string') return null;
+  const fg = raw.match(/\x1b\[38;2;(\d+);(\d+);(\d+)m/);
+  const bg = raw.match(/\x1b\[48;2;(\d+);(\d+);(\d+)m/);
+  const fgRgb = fg ? [parseInt(fg[1], 10), parseInt(fg[2], 10), parseInt(fg[3], 10)] : null;
+  const bgRgb = bg ? [parseInt(bg[1], 10), parseInt(bg[2], 10), parseInt(bg[3], 10)] : null;
+  const char = raw.length > 0 && raw[raw.length - 1] && raw[raw.length - 1] !== ' ' ? raw.slice(-1) : ' ';
+  return { fgRgb, bgRgb, char };
+};
+
+const blendRgb = (overlayRgb, underlyingRgb, opacity) => {
+  if (!underlyingRgb) return overlayRgb;
+  return overlayRgb.map((v, i) => Math.round(opacity * v + (1 - opacity) * (underlyingRgb[i] ?? 0)));
+};
+
+const rgbToAnsi = (rgb, isBg) => {
+  if (!rgb || rgb.length < 3) return '';
+  const [r, g, b] = rgb;
+  return isBg ? `\x1b[48;2;${r};${g};${b}m` : `\x1b[38;2;${r};${g};${b}m`;
+};
+
 const flattenContent = (content) => {
   const flat = [];
   for (const c of content) {
@@ -307,6 +346,9 @@ const renderToBuffer = async (node, buffer, offsetX = 0, offsetY = 0, depth = 0,
         else if (verticalAlign === 'bottom') startRow = emptyLines;
       }
 
+      const bgOpacity = Number.isFinite(style.backgroundColorOpacity) ? Math.max(0, Math.min(1, style.backgroundColorOpacity)) : 1;
+      const overlayRgb = (bgOpacity < 1 && bgColor !== 'transparent') ? getRgbForBlend(bgColor) : null;
+
       if (bgColor !== 'transparent') {
         for (let h = 0; h < height; h++) {
           for (let w = 0; w < width; w++) {
@@ -316,10 +358,23 @@ const renderToBuffer = async (node, buffer, offsetX = 0, offsetY = 0, depth = 0,
               if (cx < clipRect.x || cx >= clipRect.x + clipRect.width || cy < clipRect.y || cy >= clipRect.y + clipRect.height) continue;
             }
             if (cy < 0 || cy >= buffer.length || cx < 0 || cx >= buffer[0].length) continue;
-            buffer[cy][cx].char = ' ';
-            buffer[cy][cx].fgColor = fgColor;
-            buffer[cy][cx].bgColor = bgColor;
-            buffer[cy][cx].raw = null; // ensure to draw over any prior raw (e.g., img)
+            const cell = buffer[cy][cx];
+            if (bgOpacity < 1 && overlayRgb && cell.raw) {
+              const parsed = parseRawToRgb(cell.raw);
+              if (parsed && (parsed.fgRgb || parsed.bgRgb)) {
+                const blendFg = parsed.fgRgb ? blendRgb(overlayRgb, parsed.fgRgb, bgOpacity) : overlayRgb;
+                const blendBg = parsed.bgRgb ? blendRgb(overlayRgb, parsed.bgRgb, bgOpacity) : blendFg;
+                cell.raw = rgbToAnsi(blendFg, false) + rgbToAnsi(blendBg, true) + ' ';
+                cell.char = ' ';
+                cell.fgColor = 'transparent';
+                cell.bgColor = 'transparent';
+                continue;
+              }
+            }
+            cell.char = ' ';
+            cell.fgColor = fgColor;
+            cell.bgColor = bgColor;
+            cell.raw = null;
           }
         }
       }

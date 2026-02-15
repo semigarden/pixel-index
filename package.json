@@ -1,25 +1,25 @@
 {
-    "name": "pixel-perfect",
-    "version": "1.0.0",
-    "main": "src/generate.js",
-    "type": "commonjs",
-    "bin": {
-        "pp": "src/start.js"
-    },
-    "scripts": {
-        "start": "node --max-old-space-size=2048 src/start.js",
-        "gen": "node --max-old-space-size=4096 src/utils/generate.js",
-        "see": "node --max-old-space-size=2048 src/utils/display.js",
-        "play": "node --max-old-space-size=8192 src/utils/play.js",
-        "dev": "nodemon --quiet --inspect --trace-warnings --max-old-space-size=2048 --no-stdin src/start.js",
-        "test": "nodemon --quiet --inspect --trace-warnings --max-old-space-size=2048 --no-stdin src/tests/test.js"
-    },
-    "dependencies": {
-        "sharp": "^0.34.3"
-    },
-    "author": "semigarden",
-    "license": "MIT",
-    "devDependencies": {
-        "nodemon": "^3.1.11"
-    }
+  "name": "pixel-perfect",
+  "version": "1.0.0",
+  "main": "src/generate.js",
+  "type": "commonjs",
+  "bin": {
+    "pp": "src/start.js"
+  },
+  "scripts": {
+    "start": "node --max-old-space-size=2048 src/start.js",
+    "gen": "node --max-old-space-size=4096 src/utils/generate.js",
+    "see": "node --max-old-space-size=2048 src/utils/display.js",
+    "play": "node --max-old-space-size=8192 src/utils/play.js",
+    "dev": "OPEN_DEFAULT_PHOTO=1 nodemon --quiet --inspect --trace-warnings --max-old-space-size=2048 --no-stdin src/start.js",
+    "test": "nodemon --quiet --inspect --trace-warnings --max-old-space-size=2048 --no-stdin src/tests/test.js"
+  },
+  "dependencies": {
+    "sharp": "^0.34.3"
+  },
+  "author": "semigarden",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }

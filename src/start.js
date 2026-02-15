@@ -12,6 +12,23 @@ const main = async () => {
   GifPlayer.cleanupAllGifFrames();
 
   try {
+    // if (process.env.OPEN_DEFAULT_PHOTO === '1') {
+    //   const resourcesDir = path.join(process.cwd(), 'resources');
+    //   const defaultPhotoPath = path.join(resourcesDir, '01.jpg');
+    //   try {
+    //     const fs = require('fs');
+    //     if (fs.existsSync(defaultPhotoPath)) {
+    //       state.currentPath = resourcesDir;
+    //       const items = readDirectory(resourcesDir);
+    //       state.mediaFiles = items.filter(item => item.type === 'media');
+    //       const idx = state.mediaFiles.findIndex(item => item.path === defaultPhotoPath);
+    //       state.mediaIndex = idx >= 0 ? idx : 0;
+    //       state.view = 'photo';
+    //       state.photoPath = defaultPhotoPath;
+    //     }
+    //   } catch (_) {}
+    // }
+
     process.stdout.write('\x1b[?1049h');
     process.stdout.write('\x1b[?25l');
     process.stdout.write('\x1b[?12l');

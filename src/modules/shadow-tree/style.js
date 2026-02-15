@@ -24,6 +24,7 @@
  * @property {number|null} height // null = auto
  * @property {string} color
  * @property {string} backgroundColor
+ * @property {number} backgroundColorOpacity // 0–1; when < 1, background blends with content behind (e.g. image)
  * @property {'left'|'center'|'right'} textAlign
  * @property {'top'|'middle'|'bottom'} verticalAlign
  * @property {number} fontSize // integer >= 1
@@ -78,6 +79,7 @@ const baseDefaults = Object.freeze({
   height: null,
   color: 'transparent',
   backgroundColor: 'transparent',
+  backgroundColorOpacity: 1,
   textAlign: 'left',
   verticalAlign: 'top',
   fontSize: 1,
@@ -166,6 +168,8 @@ const normalizeStyle = (type, rawStyle) => {
   // Colors
   const color = typeof s.color === 'string' ? s.color : d.color;
   const backgroundColor = typeof s.backgroundColor === 'string' ? s.backgroundColor : d.backgroundColor;
+  const rawOpacity = Number(s.backgroundColorOpacity);
+  const backgroundColorOpacity = Number.isFinite(rawOpacity) ? Math.max(0, Math.min(1, rawOpacity)) : (d.backgroundColorOpacity ?? 1);
 
   // Text
   const textAlign = oneOf(s.textAlign, ['left', 'center', 'right'], d.textAlign);
@@ -202,6 +206,7 @@ const normalizeStyle = (type, rawStyle) => {
     height,
     color,
     backgroundColor,
+    backgroundColorOpacity,
     textAlign,
     verticalAlign,
     fontSize,

@@ -8,7 +8,7 @@ const Photo = async (imagePath) => {
   const isGif = imagePath.toLowerCase().endsWith('.gif');
   
   let normalizedWidth = state.terminal.width;
-  let normalizedHeight = state.terminal.height - 4;
+  let normalizedHeight = state.terminal.height;
   
   if (isGif) {
     try {
@@ -20,8 +20,8 @@ const Photo = async (imagePath) => {
         normalizedWidth = state.terminal.width;
         normalizedHeight = Math.round(state.terminal.width / imageAspectRatio);
       } else {
-        normalizedHeight = state.terminal.height - 4;
-        normalizedWidth = Math.round((state.terminal.height - 4) * imageAspectRatio);
+        normalizedHeight = state.terminal.height;
+        normalizedWidth = Math.round((state.terminal.height) * imageAspectRatio);
       }
     } catch (error) {
       console.warn(`Could not get GIF dimensions for ${imagePath}:`, error.message);
@@ -43,7 +43,7 @@ const Photo = async (imagePath) => {
     
     const needsReload = gifPlayer && gifPlayer.needsReload(
       state.terminal.width, 
-      state.terminal.height - 4, 
+      state.terminal.height, 
       normalizedWidth, 
       normalizedHeight
     );
@@ -54,7 +54,7 @@ const Photo = async (imagePath) => {
       gifPlayer.clearSizeCache(gifPlayer.normalizedWidth, gifPlayer.normalizedHeight);
       
       gifPlayer.width = state.terminal.width;
-      gifPlayer.height = state.terminal.height - 4;
+      gifPlayer.height = state.terminal.height;
       gifPlayer.normalizedWidth = normalizedWidth;
       gifPlayer.normalizedHeight = normalizedHeight;
       
@@ -69,7 +69,7 @@ const Photo = async (imagePath) => {
       
       gifPlayer.isLoading = true;
       
-      gifPlayer.loadGif(imagePath, state.terminal.width, state.terminal.height - 4, normalizedWidth, normalizedHeight).then(() => {
+      gifPlayer.loadGif(imagePath, state.terminal.width, state.terminal.height, normalizedWidth, normalizedHeight).then(() => {
         gifPlayer.isLoading = false;
         gifPlayer.play((frameData) => {
           if (state.photoPath === imagePath) {
@@ -83,7 +83,7 @@ const Photo = async (imagePath) => {
       gifPlayer.resume();
     } else if (!gifPlayer.isPlaying && gifPlayer.frameCache.size === 0) {
       gifPlayer.isLoading = true;
-      gifPlayer.loadGif(imagePath, state.terminal.width, state.terminal.height - 4, normalizedWidth, normalizedHeight).then(() => {
+      gifPlayer.loadGif(imagePath, state.terminal.width, state.terminal.height, normalizedWidth, normalizedHeight).then(() => {
         gifPlayer.isLoading = false;
         gifPlayer.play((frameData) => {
           if (state.photoPath === imagePath) {
@@ -100,7 +100,7 @@ const Photo = async (imagePath) => {
     element('div', {
       width: state.terminal.width,
       height: state.terminal.height,
-      backgroundColor: 'black',
+      backgroundColor: 'transparent',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -109,25 +109,28 @@ const Photo = async (imagePath) => {
     }, [
       element('img', {
         width: state.terminal.width,
-        height: state.terminal.height - 4,
+        height: state.terminal.height,
         textAlign: 'left',
         verticalAlign: 'top',
         pixelFont: true,
-        backgroundColor: 'black',
+        backgroundColor: 'transparent',
         overflow: 'hidden',
         staticMode: false,
       }, imagePath),
 
       element('text', {
         width: state.terminal.width,
-        height: 4,
-        y: state.terminal.height - 4,
+        height: 3,
+        // y: state.terminal.height - state.terminal.height / 2,
+        y: state.terminal.height - 3,
         textAlign: 'center',
         verticalAlign: 'bottom',
+        position: 'absolute',
         fontSize: 1,
         pixelFont: true,
         fontFamily: 'compact',
         backgroundColor: 'black',
+        backgroundColorOpacity: 0.6,
         color: 'white',
         overflowX: 'auto',
         overflowY: 'hidden',

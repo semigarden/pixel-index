@@ -1,4 +1,4 @@
-# Pixel Perfect
+# Pixel Index
 Terminal UI for browsing directories and viewing images/GIFs
 
 > [!NOTE]
@@ -19,8 +19,12 @@ Terminal UI for browsing directories and viewing images/GIFs
 
 ## Installation
 ```bash
-git clone https://github.com/every-moment-special/pixel-perfect.git
-cd pixel-perfect
+npm install -g pixel-index
+```
+Or
+```bash
+git clone https://github.com/semigarden/pixel-index.git
+cd pixel-index
 npm install
 npm install -g .
 ```
@@ -28,7 +32,7 @@ npm install -g .
 ## Usage
 | Command / Key | Description   |
 |---------|---------------|
-| `pp`               | Launches the media browser in the current directory     |
+| `pi`               | Launches the media browser in the current directory     |
 | `Arrow Keys`       | Navigate through items                                  |
 | `Space`            | Toggle information about media / directory              |
 | `Enter`            | Open the selected directory or file                     |

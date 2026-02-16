@@ -12,7 +12,7 @@ const Interface = async () => {
     element('div', {
       width: state.terminal.width,
       height: state.terminal.height,
-      backgroundColor: 'transparent',
+      backgroundColor: 'black',
     },[
       Panel()
     ])

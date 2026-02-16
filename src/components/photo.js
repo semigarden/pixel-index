@@ -100,7 +100,7 @@ const Photo = async (imagePath) => {
     element('div', {
       width: state.terminal.width,
       height: state.terminal.height,
-      backgroundColor: 'transparent',
+      backgroundColor: 'black',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',

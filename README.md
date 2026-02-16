@@ -29,7 +29,8 @@ npm install -g .
 | Command / Key | Description   |
 |---------|---------------|
 | `pp`               | Launches the media browser in the current directory     |
-| `Arrow Keys`       | Navigate through items                                   |
+| `Arrow Keys`       | Navigate through items                                  |
+| `Space`            | Toggle information about media / directory              |
 | `Enter`            | Open the selected directory or file                     |
 | `Backspace`        | Go up one directory level or close the current image    |
-| `Q` or `Ctrl + C`  | Exit the program                                         |
+| `Q` or `Ctrl + C`  | Exit the program                                        |

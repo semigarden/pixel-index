@@ -138,7 +138,8 @@ const Panel = () => {
         y: state.terminal.height - 3,
         width: state.terminal.width,
         height: 4,
-        backgroundColor: 'transparent',
+        backgroundColor: 'black',
+        backgroundColorOpacity: 0.6,
         zIndex: 10,
         position: 'fixed',
       }, [

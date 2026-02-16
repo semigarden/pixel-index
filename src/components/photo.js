@@ -14,15 +14,14 @@ const Photo = async (imagePath) => {
     try {
       const generator = new Generator();
       const dimensions = await generator.getImageDimensions(imagePath);
-      const imageAspectRatio = dimensions.width / dimensions.height;
-      
-      if (imageAspectRatio > 1) {
-        normalizedWidth = state.terminal.width;
-        normalizedHeight = Math.round(state.terminal.width / imageAspectRatio);
-      } else {
-        normalizedHeight = state.terminal.height;
-        normalizedWidth = Math.round((state.terminal.height) * imageAspectRatio);
-      }
+      const availWidth = state.terminal.width;
+      const availHeight = state.terminal.height;
+
+      const scaleW = availWidth / dimensions.width;
+      const scaleH = (availHeight * 2) / dimensions.height;
+      const scale = Math.min(scaleW, scaleH);
+      normalizedWidth = Math.round(dimensions.width * scale);
+      normalizedHeight = Math.round((dimensions.height * scale) / 2);
     } catch (error) {
       console.warn(`Could not get GIF dimensions for ${imagePath}:`, error.message);
     }

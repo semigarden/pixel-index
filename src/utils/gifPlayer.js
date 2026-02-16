@@ -137,20 +137,11 @@ class GifPlayer {
                 finalHeight = Math.round(width / aspectRatio);
             }
             
-            if (aspectRatio > 1) {
-                finalWidth = width;
-                finalHeight = Math.round(width / aspectRatio);
-            } else {
-                finalHeight = height;
-                finalWidth = Math.round(height * aspectRatio);
-            }
-            
             const maxCells = CONFIG.maxCells;
             const estimatedCells = finalWidth * Math.ceil(finalHeight / 2);
             if (estimatedCells > maxCells) {
                 const maxWidth = Math.sqrt(maxCells * 2);
                 const maxHeight = maxWidth;
-                
                 if (aspectRatio > 1) {
                     finalWidth = Math.floor(maxWidth);
                     finalHeight = Math.floor(finalWidth / aspectRatio);

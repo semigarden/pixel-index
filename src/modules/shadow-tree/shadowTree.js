@@ -546,13 +546,20 @@ const renderToBuffer = async (node, buffer, offsetX = 0, offsetY = 0, depth = 0,
           const generator = new Generator();
           const dimensions = await generator.getImageDimensions(src);
           const imageAspectRatio = dimensions.width / dimensions.height;
-          
-          if (imageAspectRatio > 1) {
-            normalizedWidth = width;
-            normalizedHeight = Math.round(width / imageAspectRatio);
+          if (isGif && !staticMode) {
+            const scaleW = width / dimensions.width;
+            const scaleH = (height * 2) / dimensions.height;
+            const scale = Math.min(scaleW, scaleH);
+            normalizedWidth = Math.round(dimensions.width * scale);
+            normalizedHeight = Math.round((dimensions.height * scale) / 2);
           } else {
-            normalizedHeight = imageHeight;
-            normalizedWidth = Math.round(imageHeight * imageAspectRatio);
+            if (imageAspectRatio > 1) {
+              normalizedWidth = width;
+              normalizedHeight = Math.round(width / imageAspectRatio);
+            } else {
+              normalizedHeight = imageHeight;
+              normalizedWidth = Math.round(imageHeight * imageAspectRatio);
+            }
           }
         } catch (error) {
           console.warn(`Could not get image dimensions for ${src}:`, error.message);
@@ -583,15 +590,19 @@ const renderToBuffer = async (node, buffer, offsetX = 0, offsetY = 0, depth = 0,
         
         if (gifPlayer && !gifPlayer.isLoading && gifPlayer.frameCache.size > 0 && state.photoPath === src) {
           const currentFrameIndex = gifPlayer.currentFrame % gifPlayer.frameFiles.length;
-          const frameData = gifPlayer.frameCache.get(currentFrameIndex);
+          const frameCacheKey = gifPlayer.getCacheKey(currentFrameIndex, gifPlayer.normalizedWidth, gifPlayer.normalizedHeight);
+          const frameData = gifPlayer.frameCache.get(frameCacheKey);
+          const gifOffsetX = !isPreview ? Math.floor((width - gifPlayer.normalizedWidth) / 2) : 0;
+          const effectiveGifHeight = Math.min(gifPlayer.normalizedHeight, height);
+          const gifOffsetY = !isPreview ? Math.floor((height - effectiveGifHeight) / 2) : 0;
           
           if (!frameData && gifPlayer.frameCache.size > 0) {
             const firstKey = gifPlayer.frameCache.keys().next().value;
             const firstFrame = gifPlayer.frameCache.get(firstKey);
             if (firstFrame) {
               for (const pixel of firstFrame) {
-                const cx = x + offsetX + pixel.x;
-                const cy = y + offsetY + pixel.y;
+                const cx = x + gifOffsetX + pixel.x;
+                const cy = y + gifOffsetY + pixel.y;
                 if (clipRect) {
                   if (cx < clipRect.x || cx >= clipRect.x + clipRect.width || cy < clipRect.y || cy >= clipRect.y + clipRect.height) continue;
                 }
@@ -604,8 +615,8 @@ const renderToBuffer = async (node, buffer, offsetX = 0, offsetY = 0, depth = 0,
           
           if (frameData) {
             for (const pixel of frameData) {
-              const cx = x + offsetX + pixel.x;
-              const cy = y + offsetY + pixel.y;
+              const cx = x + gifOffsetX + pixel.x;
+              const cy = y + gifOffsetY + pixel.y;
               if (clipRect) {
                 if (cx < clipRect.x || cx >= clipRect.x + clipRect.width || cy < clipRect.y || cy >= clipRect.y + clipRect.height) continue;
               }
